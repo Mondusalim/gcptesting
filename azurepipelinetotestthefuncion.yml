@@ -1,0 +1,33 @@
+trigger:
+- Mondutesting
+
+stages:
+- stage: Build
+  jobs:
+  - job: Deploy to Dev
+    pool:
+      name: vs2017-win2016
+    steps:
+    - task: AzureFileCopy@3
+      inputs:
+        SourcePath: '$(System.DefaultWorkingDirectory)/mondumondutest/testmefile'
+        azureSubscription: mydevopsconnection
+        Destination: AzureBlob
+        storage: testingthepowershelldev
+        ContainerName: testingcontainerdev
+        sasTokenTimeOutInMinutes: 240
+- stage: Release
+  jobs:
+  - job: Deploy to test
+    pool:
+      name: vs2017-win2016
+    steps:
+    - task: AzureFileCopy@3
+      inputs:
+        SourcePath: '$(System.DefaultWorkingDirectory)/mondumondutest/testmefile'
+        azureSubscription: mydevopsconnection
+        Destination: AzureBlob
+        storage: testingthepowershelldev
+        ContainerName: testingcontainertest
+        sasTokenTimeOutInMinutes: 240
+    
